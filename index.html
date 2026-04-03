@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fridge Hero</title>
+    <style>
+      :root {
+        --bg1: #0ea5e9;
+        --bg2: #22c55e;
+        --card: rgba(255, 255, 255, 0.9);
+        --text: #0f172a;
+        --muted: #475569;
+        --border: rgba(15, 23, 42, 0.12);
+        --shadow: 0 16px 40px rgba(2, 6, 23, 0.12);
+        --primary: #111827;
+        --primaryHover: #0b1220;
+        --focus: rgba(59, 130, 246, 0.35);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica,
+          Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(1200px 700px at 15% 10%, var(--bg1), transparent 55%),
+          radial-gradient(900px 600px at 85% 30%, var(--bg2), transparent 50%),
+          linear-gradient(180deg, #f8fafc, #e6f7ff);
+        padding: 32px 16px;
+      }
+
+      .wrap {
+        width: 100%;
+        max-width: 720px;
+        margin: 0 auto;
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(16px);
+        overflow: hidden;
+        position: relative;
+        isolation: isolate;
+      }
+
+      .card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at top left, rgba(34, 197, 94, 0.18), transparent 55%);
+        opacity: 0.9;
+        pointer-events: none;
+        mix-blend-mode: soft-light;
+      }
+
+      header {
+        padding: 22px 22px 10px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(24px, 3.2vw, 34px);
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+      }
+
+      p {
+        margin: 8px 0 0;
+        color: var(--muted);
+      }
+
+      main {
+        padding: 18px 22px 22px;
+      }
+
+      form {
+        display: grid;
+        gap: 14px;
+      }
+
+      .fields {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      @media (min-width: 640px) {
+        .fields {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: #0b1220;
+      }
+
+      input[type="text"] {
+        width: 100%;
+        padding: 12px 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.75);
+        outline: none;
+        transition: box-shadow 120ms ease, border-color 120ms ease, background 120ms ease;
+        color: var(--text);
+      }
+
+      input[type="text"]::placeholder {
+        color: #64748b;
+      }
+
+      input[type="text"]:focus {
+        border-color: rgba(59, 130, 246, 0.55);
+        box-shadow: 0 0 0 4px var(--focus);
+        background: rgba(255, 255, 255, 0.95);
+      }
+
+      .actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 4px;
+      }
+
+      @media (min-width: 640px) {
+        .actions {
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+        }
+      }
+
+      button {
+        cursor: pointer;
+        border: 0;
+        border-radius: 12px;
+        background: var(--primary);
+        color: white;
+        font-weight: 700;
+        padding: 12px 14px;
+        min-height: 44px;
+        transition: transform 120ms ease, background 120ms ease, box-shadow 120ms ease;
+        box-shadow: 0 10px 22px rgba(2, 6, 23, 0.18);
+      }
+
+      button:hover {
+        background: var(--primaryHover);
+      }
+
+      button:active {
+        transform: translateY(1px);
+      }
+
+      button:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 4px var(--focus), 0 10px 22px rgba(2, 6, 23, 0.18);
+      }
+
+      .hint {
+        color: var(--muted);
+        font-size: 0.95rem;
+        margin: 0;
+      }
+
+      .result {
+        margin-top: 14px;
+        border-top: 1px solid var(--border);
+        padding-top: 14px;
+        color: #0b1220;
+      }
+
+      .result strong {
+        display: block;
+        margin-bottom: 6px;
+      }
+
+      .result p {
+        margin: 0;
+        color: var(--muted);
+        word-break: break-word;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <section class="card" aria-label="Fridge Hero">
+        <header>
+          <h1>Fridge Hero</h1>
+          <p>Enter up to three ingredients, then hit “Cook Magic”.</p>
+        </header>
+
+        <main>
+          <form id="magicForm">
+            <div class="fields">
+              <div>
+                <label for="ingredient1">Ingredient 1</label>
+                <input
+                  id="ingredient1"
+                  name="ingredient1"
+                  type="text"
+                  placeholder="e.g., eggs"
+                  autocomplete="off"
+                  required
+                />
+              </div>
+
+              <div>
+                <label for="ingredient2">Ingredient 2</label>
+                <input
+                  id="ingredient2"
+                  name="ingredient2"
+                  type="text"
+                  placeholder="e.g., spinach"
+                  autocomplete="off"
+                  required
+                />
+              </div>
+
+              <div style="grid-column: 1 / -1;">
+                <label for="ingredient3">Ingredient 3</label>
+                <input
+                  id="ingredient3"
+                  name="ingredient3"
+                  type="text"
+                  placeholder="e.g., cheese (optional)"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+
+            <div class="actions">
+              <p class="hint" id="formHint">Tip: You can leave Ingredient 3 blank.</p>
+              <button type="submit" id="cookMagicButton">Cook Magic</button>
+            </div>
+
+            <div class="result" id="result" aria-live="polite">
+              <strong>Magic Result</strong>
+              <p id="resultText">Waiting for your ingredients...</p>
+            </div>
+          </form>
+        </main>
+      </section>
+    </div>
+
+    <script>
+      const form = document.getElementById("magicForm");
+      const resultText = document.getElementById("resultText");
+      const cookMagicButton = document.getElementById("cookMagicButton");
+
+      function cleanValue(v) {
+        return String(v || "").trim();
+      }
+
+      async function syncIngredients(ingredients) {
+        const endpoint = "http://localhost:3000/api/ingredients/sync";
+
+        try {
+          const response = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ ingredients }),
+          });
+
+          if (!response.ok) {
+            throw new Error(`Sync failed with status ${response.status}`);
+          }
+
+          return await response.json();
+        } catch (error) {
+          console.error("Error during syncIngredients:", error);
+          throw error;
+        }
+      }
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const i1 = cleanValue(document.getElementById("ingredient1").value);
+        const i2 = cleanValue(document.getElementById("ingredient2").value);
+        const i3 = cleanValue(document.getElementById("ingredient3").value);
+
+        const used = [i1, i2].concat(i3 ? [i3] : []);
+
+        if (used.length < 2) {
+          resultText.textContent = "Please add at least two ingredients.";
+          return;
+        }
+
+        const pretty = used.join(" + ");
+
+        const defaultButtonText = "Cook Magic";
+        cookMagicButton.textContent = "Loading...";
+        cookMagicButton.disabled = true;
+
+        try {
+          resultText.textContent = "Syncing with Fridge Hero...";
+          const data = await syncIngredients(used);
+          const serverMessage = (data && data.reply) || "Sync successful.";
+          resultText.textContent = `Magic idea: ${pretty}. ${serverMessage}`;
+        } catch (err) {
+          console.error(err);
+          resultText.textContent =
+            "We couldn't sync with the server. Check your connection or try again later.";
+        } finally {
+          cookMagicButton.textContent = defaultButtonText;
+          cookMagicButton.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>
+
